@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:layout_margin="4dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:id='@+id/linear_layout_1'
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal"
+        android:gravity="top">
+
+        <ImageButton
+            android:id="@+id/strava"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/strava_logo"
+            android:background="@android:color/transparent" />
+
+        <ImageButton
+            android:id="@+id/refresh"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/refresh"
+            android:background="@android:color/transparent"/>
+
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id='@+id/linear_layout_2'
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:clickable="false"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/x_km"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:gravity="top"
+            android:text="X km"
+            android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Title" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id='@+id/linear_layout_3'
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="horizontal"
+        android:layout_margin="0dp"
+        android:clickable="false"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/display_type"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:text="Display type" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id='@+id/linear_layout_4'
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:clickable="false">
+
+        <ImageView
+            android:id="@+id/barchart"
+            android:layout_width="280dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id='@+id/linear_layout_5'
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/swim_btn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/swim"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"/>
+
+        <ImageButton
+            android:id="@+id/ride_btn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/bike"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"/>
+
+        <ImageButton
+            android:id="@+id/run_btn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/run"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"/>
+
+        <ImageButton
+            android:id="@+id/all_btn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/run"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
+
+</LinearLayout>

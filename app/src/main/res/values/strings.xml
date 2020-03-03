@@ -1,0 +1,19 @@
+
+<resources>
+    <string name="app_name">Strava Authenticator Example</string>
+
+    <!-- <string name="action_settings">Settings</string> -->
+    <string name="domain">com.example.thomas</string>
+
+    <string name="button_login">Login with Strava</string>
+
+    <string name="spinner_prompt">Choose graph display</string>
+
+    <string-array name="spinner_arrays">
+        <item>Display current week</item>
+        <item>Display current month</item>
+        <item>Display since Date</item>
+        <item>Display X last days</item>
+    </string-array>
+
+</resources>

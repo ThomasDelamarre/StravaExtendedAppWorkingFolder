@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.thomas.stravaappwidgetextended"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <application
+        android:allowBackup="true"
+        tools:replace="android:allowBackup"
+        android:label="AAStravaAppWidgetExtended"
+        android:launchMode="singleTask"
+        android:theme="@style/AppTheme">
+
+        <receiver android:name=".appWidget.AppWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                    <!-- Broadcast Receiver that will also process our self created action -->
+                <action android:name="com.example.thomas.stravaappwidgetextended.ExampleAppWidgetProvider.ACTION_WIDGET_REFRESH" />
+                <action android:name="com.example.thomas.stravaappwidgetextended.ExampleAppWidgetProvider.ACTION_WIDGET_SWIM" />
+                <action android:name="com.example.thomas.stravaappwidgetextended.ExampleAppWidgetProvider.ACTION_WIDGET_RIDE" />
+                <action android:name="com.example.thomas.stravaappwidgetextended.ExampleAppWidgetProvider.ACTION_WIDGET_RUN" />
+                <action android:name="com.example.thomas.stravaappwidgetextended.ExampleAppWidgetProvider.ACTION_WIDGET_ALL" />
+                <action android:name="com.example.thomas.stravaappwidgetextended.ExampleAppWidgetProvider.ACTION_WIDGET_STRAVA" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info" />
+        </receiver>
+
+        <activity android:name=".api.authenticator.InitialStravaAuthActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".FirstActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".api.authenticator.AuthCodeExchangeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="com.example.thomas"
+                    android:pathPrefix="/oauthcallback"
+                    android:scheme="https"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".api.authenticator.RefreshTokenActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
