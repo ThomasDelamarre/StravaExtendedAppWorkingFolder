@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.thomas.stravaappwidgetextended.Constants;
 import com.example.thomas.stravaappwidgetextended.R;
@@ -14,12 +14,12 @@ import com.example.thomas.stravaappwidgetextended.R;
 
 public class InitialStravaAuthActivity extends AppCompatActivity {
 
-    private Button button;
+    private ImageButton button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_auth);
+        setContentView(R.layout.activity_first);
         button = findViewById(R.id.click2);
         button.setOnClickListener(new View.OnClickListener(){
             @Override

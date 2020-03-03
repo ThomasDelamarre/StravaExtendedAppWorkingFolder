@@ -30,11 +30,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.lang.Math.round;
+
 
 public class ChartManager {
 
     private Context context;
     private DataPreparator data_prep;
+    private float total_distance;
 
     private final static float TEXT_SIZE = 10f;
 
@@ -53,7 +56,7 @@ public class ChartManager {
         BarData data = r.getBarData();
         ArrayList<String> labels = r.getLabels();
         int today_index = r.getTodayIndex();
-        float total_distance = r.getTotalDistance();
+        this.total_distance = r.getTotalDistance();
 
         //Configure then set BarData
         data.setValueFormatter(new MyValueFormatter()); //Remove label if data <0.4
@@ -92,6 +95,11 @@ public class ChartManager {
 
         bitmap = barchart.getChartBitmap();
         return bitmap;
+    }
+
+    public float getTotalDistance(){
+        //TODO Fix CAREFUL : YOU MUST ONLY USE AFTER FETCHING NEW BARCHART ...
+        return this.total_distance;
     }
 
     private class MyValueFormatter implements IValueFormatter {

@@ -142,8 +142,8 @@
         android:id="@+id/strava_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/api_logo_pwrdby_strava_stack_light"
         android:layout_alignParentBottom="true" />
+    <!--TODO add the correct image svg-->
 
 
 </RelativeLayout>

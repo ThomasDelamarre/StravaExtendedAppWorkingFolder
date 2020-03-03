@@ -10,13 +10,13 @@
     tools:context=".api.authenticator.InitialStravaAuthActivity">
 
 
-    <Button
+    <ImageButton
         android:id="@+id/click2"
-        android:layout_width="180dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="32dp"
-        android:text="Authentify" />
+        android:src="@drawable/ic_btn_strava_connectwith_orange"
+        android:background="@android:color/transparent"/>
 
 </RelativeLayout>
