@@ -90,53 +90,61 @@ public class DataPreparator {
         ArrayList<BarEntry> entries_after = new ArrayList<>();
 
         ArrayList<String> labels = new ArrayList<>();
-        float max_distance = 0f;
+        double max_distance = 0;
         int today_index = 0;
-        float total_distance = 0;
+        double total_distance = 0;
 
         for (long i = 0; i < lenght; i++) {
             LocalDate date = start_date.plusDays(i);
-            float distance = getDistanceForDay(sport_type, date, activities);
+            double distance = getDistanceForDay(sport_type, date, activities);
             total_distance += distance;
 
             if (max_distance<distance) {max_distance = distance;}
 
             if (date.isBefore(today)) {
-                entries_before.add(new BarEntry((float) i, distance));
+                entries_before.add(new BarEntry((int) i, (float) distance));
             } else if (date.isAfter(today)) {
-                entries_after.add(new BarEntry((float) i, distance));
+                entries_after.add(new BarEntry((float) i, (float) distance));
             } else {
                 today_index = (int) i;
-                entry_today.add(new BarEntry((float) i, distance));
+                entry_today.add(new BarEntry((float) i, (float) distance));
             }
 
-            if (lenght < 32) { //For longer period we want to have other labels
+            if (lenght < 32) { //TODO For longer period we want to have other labels
                 labels.add(getDayLetterFromDate(date));
             }
         }
 
-//        for (BarEntry entry: entries){ if (entry.getY() == 0f){entry.setY(max_distance/30);} } // Create an Offset
-
         BarDataSet bar_dataset_before = new BarDataSet(entries_before, "Distance");
         bar_dataset_before.setColor(ContextCompat.getColor(context,R.color.green));
+        bar_dataset_before.setBarBorderColor(ContextCompat.getColor(context,R.color.green));
+        bar_dataset_before.setBarBorderWidth(1f);
 
         BarDataSet bar_dataset_today = new BarDataSet(entry_today, "Distance");
-        bar_dataset_today.setColor(ContextCompat.getColor(context,R.color.black));
+        bar_dataset_today.setColor(ContextCompat.getColor(context,R.color.darkgreen));
+        bar_dataset_today.setBarBorderColor(ContextCompat.getColor(context, R.color.darkgreen));
+        bar_dataset_today.setBarBorderWidth(1f);
 
         BarDataSet bar_dataset_after = new BarDataSet(entries_after, "Distance");
         bar_dataset_after.setColor(ContextCompat.getColor(context,R.color.grey));
+        bar_dataset_after.setBarBorderColor(ContextCompat.getColor(context, R.color.grey));
+        bar_dataset_after.setBarBorderWidth(1f);
 
+        //Add datasets to bardata
         BarData data = new BarData(bar_dataset_before);
         data.addDataSet(bar_dataset_today);
         data.addDataSet(bar_dataset_after);
 
-        return_data = new ConvenientReturnFormat(data, labels, today_index, total_distance);
+        //Set bar width - If too big for display size the lib handles
+        data.setBarWidth(0.2f);
+
+        return_data = new ConvenientReturnFormat(data, labels, today_index, (float) total_distance);
         return return_data;
     }
 
-    private long getDistanceForDay(String sport_type, LocalDate day, List<Activity> activities){
+    private double getDistanceForDay(String sport_type, LocalDate day, List<Activity> activities){
 
-        long distance_for_the_day = 0;
+        double distance_for_the_day = 0;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -144,8 +152,8 @@ public class DataPreparator {
             if (act.getType().equals(Constants.VIRTUAL_RIDE)){act.setType(Constants.RIDE);} //Current handling of Virtual rides
             if (act.getType().equals(sport_type) || sport_type.equals(Constants.ALL_SPORTS)){
                 String act_date_str = act.getStartDate();
-                Double act_distance = act.getDistance();
-                long act_distance_km = convertToKilometers(act_distance);
+                double act_distance = act.getDistance();
+                double act_distance_km = convertToKilometers(act_distance);
                 LocalDate date = LocalDate.parse(act_date_str, formatter);
                 if (date.equals(day)) {
                     distance_for_the_day += act_distance_km;
@@ -155,8 +163,10 @@ public class DataPreparator {
         return distance_for_the_day;
     }
 
-    private long convertToKilometers(double distance){
-        return Math.round(distance/100)/10; //To keep one decimal
+    private double convertToKilometers(double distance){
+        double dist_km = Math.round(distance/100);
+        dist_km = dist_km/10; //To keep one decimal
+        return dist_km;
     }
 
     private String getDayLetterFromDate(LocalDate date){

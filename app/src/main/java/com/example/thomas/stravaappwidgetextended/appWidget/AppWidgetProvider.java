@@ -9,8 +9,10 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.example.thomas.stravaappwidgetextended.Constants;
+import com.example.thomas.stravaappwidgetextended.MainActivity;
 import com.example.thomas.stravaappwidgetextended.R;
 import com.example.thomas.stravaappwidgetextended.api.requestor.RequestManager;
 import com.example.thomas.stravaappwidgetextended.sharedPreferences.SharedPrefManager;
@@ -26,23 +28,28 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
     private static String ACTION_WIDGET_SWIM = "Swm";
     private static String ACTION_WIDGET_RIDE = "Rde";
     private static String ACTION_WIDGET_ALL = "All";
-    private static String ACTION_WIDGET_STRAVA = "Sta";
+    private static String ACTION_WIDGET_OPEN_STRAVA = "Sta";
+    private static String ACTION_WIDGET_OPEN_APP = "Opn";
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds){
-        Log.e("OnDeleted", "True");
+        Log.i("OnDeleted", "True");
         super.onDeleted(context, appWidgetIds);
     }
 
     @Override
     public void onEnabled(Context context){
-        Log.e("OnEnabled", "True");
+        Log.i("OnEnabled", "True");
         super.onEnabled(context);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.e("OnUpdate", "True");
+        Log.i("OnUpdate", "True");
+
+        Toast toast = Toast.makeText(context,  "Appwidget updated", Toast.LENGTH_LONG);
+        toast.show();
+
         chart_manager = new ChartManager(context);
         sharedpref_manager = new SharedPrefManager(context);
         request_manager = new RequestManager(context);
@@ -60,6 +67,11 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
             intent.putExtra("ID", widgetId);
             PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.refresh, actionPendingIntent);
+
+            intent = new Intent(context, MainActivity.class);
+            intent.putExtra("ID", widgetId);
+            actionPendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            remoteViews.setOnClickPendingIntent(R.id.redirect_to_app, actionPendingIntent);
 
             intent = new Intent(context, AppWidgetProvider.class);
             intent.setAction(ACTION_WIDGET_SWIM + Integer.toString(widgetId));
@@ -86,7 +98,7 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
             remoteViews.setOnClickPendingIntent(R.id.all_btn, actionPendingIntent);
 
             intent = new Intent(context, AppWidgetProvider.class);
-            intent.setAction(ACTION_WIDGET_STRAVA + Integer.toString(widgetId));
+            intent.setAction(ACTION_WIDGET_OPEN_STRAVA + Integer.toString(widgetId));
             actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.strava, actionPendingIntent);
 
@@ -95,14 +107,16 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
             setDistance(remoteViews,chart_manager.getTotalDistance());
 
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
-
-            Log.e("Id", Integer.toString(widgetId));
         }
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e("OnReceive", intent.getAction());
+
+        Toast toast = Toast.makeText(context,  "Intent received", Toast.LENGTH_SHORT);
+        toast.show();
+
+        Log.i("OnReceive", intent.getAction());
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
@@ -130,7 +144,7 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
             sport_type = Constants.RUN;
         } else if (intent_extract.equals(ACTION_WIDGET_ALL)) {
             sport_type = Constants.ALL_SPORTS;
-        } else if (intent_extract.equals(ACTION_WIDGET_STRAVA)) {
+        } else if (intent_extract.equals(ACTION_WIDGET_OPEN_STRAVA)) {
             openStravaApp(context);
         } else {
             super.onReceive(context, intent);
@@ -158,6 +172,17 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
         }
         catch (ActivityNotFoundException e) {
             Log.i("App Strava non installée", e.toString());
+        }
+    }
+
+    private void openOurApp(Context context){
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage("com.example.thomas.stravaappwidgetextended");
+        try {
+            context.startActivity(intent);
+        }
+        catch (ActivityNotFoundException e) {
+            Log.i("Impossible d'ouvrir notre app", e.toString());
         }
     }
 

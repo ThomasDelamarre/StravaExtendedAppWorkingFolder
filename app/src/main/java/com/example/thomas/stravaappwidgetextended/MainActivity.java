@@ -172,13 +172,18 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.btn_apply_days:
                 String nb_days_text = number_days.getText().toString();
-                if (!nb_days_text.isEmpty()) {
+                if (!nb_days_text.isEmpty() && Integer.parseInt(nb_days_text) < 367) {
                     int nb_days_int = Integer.parseInt(nb_days_text);
                     sharedpref_manager.saveNumberDays(nb_days_int);
+                    chart.setImageBitmap(chart_manager.getBarChartInBitmap(sport_type));
+
+                } else {
+                    number_days.setText("");
+                    number_days.setHint("La valeur doit être inférieure à 1 an");
+                    //No change of graph in this case
                 }
                 break;
         }
-        chart.setImageBitmap(chart_manager.getBarChartInBitmap(sport_type));
     }
 
     private void configureInitialState(){

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.lang.Math.min;
 import static java.lang.Math.round;
 
 
@@ -39,7 +40,8 @@ public class ChartManager {
     private DataPreparator data_prep;
     private float total_distance;
 
-    private final static float TEXT_SIZE = 10f;
+    private final static float TEXT_SIZE = 12f;
+    private final static int GRAPH_MAX_WIDTH = 800;
 
     public ChartManager(Context context) {
         this.context = context;
@@ -70,7 +72,10 @@ public class ChartManager {
         barchart.getLegend().setEnabled(false);
         barchart.setFitBars(true); // make the x-axis fit exactly all bars
         barchart.getAxisLeft().setEnabled(false);
+        barchart.getAxisLeft().setAxisMinimum(0f);
         barchart.getAxisRight().setEnabled(false);
+        barchart.setExtraOffsets(0, 0, 0, 4);
+
         //Below handles xAxis label colors
         barchart.setXAxisRenderer(new ColoredLabelXAxisRenderer(barchart.getViewPortHandler(), barchart.getXAxis(), barchart.getTransformer(YAxis.AxisDependency.LEFT), today_index));
 
@@ -90,8 +95,16 @@ public class ChartManager {
         barchart.invalidate();
 
         //Required to convert in Bitmap
+        //TODO understand ce que ca fait pour l'instant c'est des valeurs au pif
+
         barchart.measure(220, 60);
-        barchart.layout(0, 0, 660, 180);
+
+        //Set graph size
+        int graph_width = GRAPH_MAX_WIDTH;
+        if(labels.size() > 0) {
+            graph_width = min(80*labels.size(), GRAPH_MAX_WIDTH);
+        }
+        barchart.layout(0, 0, graph_width, 180); //Set the graph size
 
         bitmap = barchart.getChartBitmap();
         return bitmap;
@@ -99,6 +112,7 @@ public class ChartManager {
 
     public float getTotalDistance(){
         //TODO Fix CAREFUL : YOU MUST ONLY USE AFTER FETCHING NEW BARCHART ...
+        //So far no issues
         return this.total_distance;
     }
 

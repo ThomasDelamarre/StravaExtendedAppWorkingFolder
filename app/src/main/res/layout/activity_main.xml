@@ -98,7 +98,7 @@
                 android:id="@+id/btn_apply_days"
                 android:text="Apply"
                 android:layout_width="100dp"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="left"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:onClick="onApplyButtonClicked" />
@@ -134,16 +134,17 @@
         android:id="@+id/graph"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_below="@+id/selectors"/>
 
     <!-- Mandatory "Powered by Strava" attribution -->
     <!-- via https://developers.strava.com/guidelines/ -->
     <ImageView
         android:id="@+id/strava_bottom"
+        android:src="@drawable/powered_by_strava"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
-    <!--TODO add the correct image svg-->
-
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>
