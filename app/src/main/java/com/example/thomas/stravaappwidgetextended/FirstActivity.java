@@ -17,15 +17,16 @@ public class FirstActivity extends AppCompatActivity{
         shared_pref_manager = new SharedPrefManager(this);
 
         Boolean is_authentified = shared_pref_manager.checkIfStravaAccessIsGranted();
+        Boolean is_data_fetched = shared_pref_manager.getInitialFetchDone();
         Intent intent;
 
         if (is_authentified){
-            intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            intent = new Intent(this, ParametersActivity.class);
         }
         else {
             intent = new Intent(this, InitialStravaAuthActivity.class);
-            startActivity(intent);
+
         }
+            startActivity(intent);
     }
 }

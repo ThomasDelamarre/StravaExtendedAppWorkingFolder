@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.thomas.stravaappwidgetextended.MainActivity">
+    tools:context="com.example.thomas.stravaappwidgetextended.ParametersActivity">
 
     <!--TODO make the choice between distance and duration P2-->
 
@@ -67,15 +67,15 @@
                 android:layout_height="wrap_content"
                 android:text="Current month"
                 android:onClick="onRadioButtonClicked"/>
-            <RadioButton android:id="@+id/rb_sincedate"
+            <!--<RadioButton android:id="@+id/rb_sincedate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Since date"
+                android:text="Since date"-->
                 android:onClick="onRadioButtonClicked"/>
             <RadioButton android:id="@+id/rb_lastXdays"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Last X days"
+                android:text="Last X Days"
                 android:onClick="onRadioButtonClicked"/>
         </RadioGroup>
 
@@ -129,13 +129,19 @@
 
     </RelativeLayout>
 
+    <include layout="@layout/appwidget"
+        android:id="@+id/appwidget"
+        android:layout_width="290dp"
+        android:layout_height="180dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/spacer" />
 
-    <ImageView
-        android:id="@+id/graph"
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/spacer"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_below="@+id/selectors"/>
+        android:layout_height="100dp"
+        android:layout_above="@id/strava_bottom"/>
 
     <!-- Mandatory "Powered by Strava" attribution -->
     <!-- via https://developers.strava.com/guidelines/ -->

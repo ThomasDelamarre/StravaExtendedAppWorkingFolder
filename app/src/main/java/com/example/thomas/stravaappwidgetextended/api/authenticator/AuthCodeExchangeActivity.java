@@ -7,10 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.thomas.stravaappwidgetextended.MainActivity;
+import com.example.thomas.stravaappwidgetextended.ParametersActivity;
 import com.example.thomas.stravaappwidgetextended.Constants;
 import com.example.thomas.stravaappwidgetextended.api.pojo.AuthTokens;
-import com.example.thomas.stravaappwidgetextended.api.requestor.RequestManager;
 import com.example.thomas.stravaappwidgetextended.sharedPreferences.SharedPrefManager;
 
 import retrofit2.Call;
@@ -36,7 +35,7 @@ public class AuthCodeExchangeActivity extends AppCompatActivity {
 
         exchangeAuthCodeforAuthTokens(authorization_code);
 
-        intent = new Intent(this, MainActivity.class);
+        intent = new Intent(this, ParametersActivity.class);
         Toast toast = Toast.makeText(this, "Authentification succesful!", Toast.LENGTH_SHORT);
         toast.show();
         startActivity(intent);

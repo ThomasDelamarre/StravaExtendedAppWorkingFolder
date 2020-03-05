@@ -101,7 +101,8 @@ public class SharedPrefManager {
     }
 
     public LocalDate getStartDate(){
-        String date_str = this.shared_pref.getString(Constants.START_DATE, null);
+        String date_str = this.shared_pref.getString(Constants.START_DATE, LocalDate.now().toString());
+        Log.e("erreur ici", date_str);
         LocalDate date = LocalDate.parse(date_str);
         return date;
     }

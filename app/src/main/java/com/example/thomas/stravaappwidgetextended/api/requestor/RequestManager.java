@@ -2,6 +2,7 @@ package com.example.thomas.stravaappwidgetextended.api.requestor;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.thomas.stravaappwidgetextended.api.authenticator.AuthManager;

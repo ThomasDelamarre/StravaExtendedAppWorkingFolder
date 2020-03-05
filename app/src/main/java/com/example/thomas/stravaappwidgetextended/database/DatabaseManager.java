@@ -2,6 +2,7 @@ package com.example.thomas.stravaappwidgetextended.database;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class DatabaseManager {
 
         data_source.close();
     }
+
 
     public List<Activity> getAllActivitiesFromDatabase() {
         StravaActivityDataSource data_source = new StravaActivityDataSource(this.context);

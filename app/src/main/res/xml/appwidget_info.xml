@@ -3,6 +3,7 @@
     android:minWidth="290dp"
     android:minHeight="120dp"
     android:updatePeriodMillis="1860000"
+    android:previewImage="@drawable/default_viz"
     android:initialLayout="@layout/appwidget"
     android:resizeMode="none"
     android:widgetCategory="home_screen|keyguard">

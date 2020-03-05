@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,8 +25,10 @@
                 <action android:name="com.example.thomas.stravaappwidgetextended.ExampleAppWidgetProvider.ACTION_WIDGET_ALL" />
                 <action android:name="com.example.thomas.stravaappwidgetextended.ExampleAppWidgetProvider.ACTION_WIDGET_STRAVA" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                android:resource="@xml/appwidget_info" />
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info"
+                android:previewImage="@drawable/default_viz"/>
         </receiver>
 
         <activity android:name=".api.authenticator.InitialStravaAuthActivity">
@@ -34,6 +37,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+
         <activity android:name=".FirstActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,6 +45,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".api.authenticator.AuthCodeExchangeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -52,18 +57,14 @@
                     android:scheme="https"/>
             </intent-filter>
         </activity>
-        <activity android:name=".api.authenticator.RefreshTokenActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".MainActivity"
+
+        <activity android:name=".ParametersActivity"
             android:label="Paramètres">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
     </application>
 </manifest>

@@ -12,7 +12,7 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.example.thomas.stravaappwidgetextended.Constants;
-import com.example.thomas.stravaappwidgetextended.MainActivity;
+import com.example.thomas.stravaappwidgetextended.ParametersActivity;
 import com.example.thomas.stravaappwidgetextended.R;
 import com.example.thomas.stravaappwidgetextended.api.requestor.RequestManager;
 import com.example.thomas.stravaappwidgetextended.sharedPreferences.SharedPrefManager;
@@ -29,7 +29,6 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
     private static String ACTION_WIDGET_RIDE = "Rde";
     private static String ACTION_WIDGET_ALL = "All";
     private static String ACTION_WIDGET_OPEN_STRAVA = "Sta";
-    private static String ACTION_WIDGET_OPEN_APP = "Opn";
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds){
@@ -55,57 +54,8 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
         request_manager = new RequestManager(context);
 
         for (int widgetId : appWidgetIds) {
-            String sport_type = sharedpref_manager.getSportType(); // Return All_sport by default
-            String display_type = sharedpref_manager.getDisplayType();
-
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget);
-
-            setButtonsColors(context, remoteViews, sport_type);
-
-            Intent intent = new Intent(context, AppWidgetProvider.class);
-            intent.setAction(ACTION_WIDGET_REFRESH + Integer.toString(widgetId)); //Fix because 2 intent must have different actions
-            intent.putExtra("ID", widgetId);
-            PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.refresh, actionPendingIntent);
-
-            intent = new Intent(context, MainActivity.class);
-            intent.putExtra("ID", widgetId);
-            actionPendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            remoteViews.setOnClickPendingIntent(R.id.redirect_to_app, actionPendingIntent);
-
-            intent = new Intent(context, AppWidgetProvider.class);
-            intent.setAction(ACTION_WIDGET_SWIM + Integer.toString(widgetId));
-            intent.putExtra("ID", widgetId);
-            actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.swim_btn, actionPendingIntent);
-
-            intent = new Intent(context, AppWidgetProvider.class);
-            intent.setAction(ACTION_WIDGET_RIDE + Integer.toString(widgetId));
-            intent.putExtra("ID", widgetId);
-            actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.ride_btn, actionPendingIntent);
-
-            intent = new Intent(context, AppWidgetProvider.class);
-            intent.setAction(ACTION_WIDGET_RUN + Integer.toString(widgetId));
-            intent.putExtra("ID", widgetId);
-            actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.run_btn, actionPendingIntent);
-
-            intent = new Intent(context, AppWidgetProvider.class);
-            intent.putExtra("ID", widgetId);
-            intent.setAction(ACTION_WIDGET_ALL + Integer.toString(widgetId));
-            actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.all_btn, actionPendingIntent);
-
-            intent = new Intent(context, AppWidgetProvider.class);
-            intent.setAction(ACTION_WIDGET_OPEN_STRAVA + Integer.toString(widgetId));
-            actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.strava, actionPendingIntent);
-
-            remoteViews.setImageViewBitmap(R.id.barchart, chart_manager.getBarChartInBitmap(sport_type));
-            remoteViews.setTextViewText(R.id.display_type, sharedpref_manager.getDisplayType());
-            setDistance(remoteViews,chart_manager.getTotalDistance());
-
+            updateWidget(context, remoteViews, widgetId, Boolean.TRUE);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
     }
@@ -127,15 +77,14 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
         request_manager = new RequestManager(context);
 
         int id=0;
-        String sport_type;
 
         String intent_extract = intent.getAction().substring(0,3); //Fix because 2 intent must have different actions
 
-        sport_type = sharedpref_manager.getSportType();
+        String sport_type = sharedpref_manager.getSportType();
 
         if (intent_extract.equals(ACTION_WIDGET_REFRESH)) {
             request_manager.fetchLast30Activities();
-            //faire attendre que le request manager finissse TODO
+            //faire attendre que le request manager finissse TODO pas sur que besoin
         } else if (intent_extract.equals(ACTION_WIDGET_SWIM)) {
             sport_type = Constants.SWIM;
         } else if (intent_extract.equals(ACTION_WIDGET_RIDE)) {
@@ -150,18 +99,86 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
             super.onReceive(context, intent);
         }
 
-        if (intent.hasExtra("ID")){
-            id = intent.getIntExtra("ID", 0);
-        }
-
         sharedpref_manager.saveSportType(sport_type);
 
-        setButtonsColors(context, remoteViews, sport_type);
-        remoteViews.setImageViewBitmap(R.id.barchart, chart_manager.getBarChartInBitmap(sport_type));
-        remoteViews.setTextViewText(R.id.display_type, sharedpref_manager.getDisplayType());
-        setDistance(remoteViews,chart_manager.getTotalDistance());
+        if (intent.hasExtra("ID")){
+            id = intent.getIntExtra("ID", 0);
+            updateWidget(context, remoteViews, id, Boolean.TRUE);
+        }
 
         appWidgetManager.updateAppWidget(id, remoteViews);
+    }
+
+    private void updateWidget(Context context, RemoteViews remoteViews, int widgetId, Boolean set_intents){
+        if (set_intents) {
+            setIntents(context, remoteViews, widgetId);
+        }
+        updateButtons(context, remoteViews);
+        remoteViews.setImageViewBitmap(R.id.barchart, chart_manager.getBarChartInBitmap(sharedpref_manager.getSportType()));
+        remoteViews.setTextViewText(R.id.x_km, parseDistance(chart_manager.getTotalDistance())); //Must be done AFTER getChart
+        remoteViews.setTextViewText(R.id.display_type, sharedpref_manager.getDisplayType());
+    }
+
+    private void setIntents(Context context, RemoteViews remoteViews, int widgetId){
+
+        //Intent to open our app
+        Intent intent = new Intent(context, ParametersActivity.class);
+        intent.putExtra("ID", widgetId);
+        PendingIntent actionPendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        remoteViews.setOnClickPendingIntent(R.id.redirect_to_app, actionPendingIntent);
+
+        //Below are all PendingIntents referring to this class
+        remoteViews.setOnClickPendingIntent(R.id.refresh, createBroadcastIntent(context, ACTION_WIDGET_REFRESH, widgetId));
+        remoteViews.setOnClickPendingIntent(R.id.swim_btn, createBroadcastIntent(context, ACTION_WIDGET_SWIM, widgetId));
+        remoteViews.setOnClickPendingIntent(R.id.ride_btn, createBroadcastIntent(context, ACTION_WIDGET_RIDE, widgetId));
+        remoteViews.setOnClickPendingIntent(R.id.run_btn, createBroadcastIntent(context, ACTION_WIDGET_RUN, widgetId));
+        remoteViews.setOnClickPendingIntent(R.id.all_btn, createBroadcastIntent(context, ACTION_WIDGET_ALL, widgetId));
+        remoteViews.setOnClickPendingIntent(R.id.strava, createBroadcastIntent(context, ACTION_WIDGET_OPEN_STRAVA, widgetId));
+
+    }
+
+    private PendingIntent createBroadcastIntent(Context context, String action, int id){
+        Intent intent = new Intent(context, AppWidgetProvider.class);
+        intent.setAction(action + Integer.toString(id));
+        intent.putExtra("ID", id);
+        PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return actionPendingIntent;
+    }
+
+    private void updateButtons(Context context, RemoteViews remoteViews){
+        int white = ContextCompat.getColor(context, R.color.white);
+        int black = ContextCompat.getColor(context, R.color.black);
+
+        String sport_type = sharedpref_manager.getSportType();
+
+        //Set all the buttons to dark tint
+        remoteViews.setInt(R.id.ride_btn, "setColorFilter", black);
+        remoteViews.setInt(R.id.swim_btn, "setColorFilter", black);
+        remoteViews.setInt(R.id.run_btn, "setColorFilter", black);
+        remoteViews.setInt(R.id.all_btn, "setColorFilter", black);
+
+
+        //Set the selected button to white tint
+        switch (sport_type){
+            case Constants.SWIM:
+                remoteViews.setInt(R.id.swim_btn, "setColorFilter", white);
+                break;
+            case Constants.RUN:
+                remoteViews.setInt(R.id.run_btn, "setColorFilter", white);
+                break;
+            case Constants.RIDE:
+                remoteViews.setInt(R.id.ride_btn, "setColorFilter", white);
+                break;
+            case Constants.ALL_SPORTS:
+                remoteViews.setInt(R.id.all_btn, "setColorFilter", white);
+                break;
+        }
+    }
+
+    private String parseDistance(float distance){
+        String distance_str = Float.toString(distance);
+        distance_str = distance_str.replace(".",",");
+        return distance_str;
     }
 
     private void openStravaApp(Context context){
@@ -173,61 +190,5 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
         catch (ActivityNotFoundException e) {
             Log.i("App Strava non installée", e.toString());
         }
-    }
-
-    private void openOurApp(Context context){
-        PackageManager packageManager = context.getPackageManager();
-        Intent intent = packageManager.getLaunchIntentForPackage("com.example.thomas.stravaappwidgetextended");
-        try {
-            context.startActivity(intent);
-        }
-        catch (ActivityNotFoundException e) {
-            Log.i("Impossible d'ouvrir notre app", e.toString());
-        }
-    }
-
-    private void setButtonsColors(Context context, RemoteViews remoteViews, String sport_type){
-        int lightOrange = ContextCompat.getColor(context, R.color.lightStravaOrange);
-        int stravaOrange = ContextCompat.getColor(context, R.color.stravaOrange);
-        int white = ContextCompat.getColor(context, R.color.white);
-        int black = ContextCompat.getColor(context, R.color.black);
-
-        //Set all the buttons to strava orange and dark tint
-        remoteViews.setInt(R.id.ride_btn, "setBackgroundColor", stravaOrange);
-        remoteViews.setInt(R.id.swim_btn, "setBackgroundColor", stravaOrange);
-        remoteViews.setInt(R.id.run_btn, "setBackgroundColor", stravaOrange);
-        remoteViews.setInt(R.id.all_btn, "setBackgroundColor", stravaOrange);
-        remoteViews.setInt(R.id.ride_btn, "setColorFilter", black);
-        remoteViews.setInt(R.id.swim_btn, "setColorFilter", black);
-        remoteViews.setInt(R.id.run_btn, "setColorFilter", black);
-        remoteViews.setInt(R.id.all_btn, "setColorFilter", black);
-
-
-        //Set the selected button to white tint
-        switch (sport_type){
-            case Constants.SWIM:
-                //remoteViews.setInt(R.id.swim_btn, "setBackgroundColor", darkOrange);
-                remoteViews.setInt(R.id.swim_btn, "setColorFilter", white);
-                break;
-            case Constants.RUN:
-                //remoteViews.setInt(R.id.run_btn, "setBackgroundColor", darkOrange);
-                remoteViews.setInt(R.id.run_btn, "setColorFilter", white);
-                break;
-            case Constants.RIDE:
-                //remoteViews.setInt(R.id.ride_btn, "setBackgroundColor", darkOrange);
-                remoteViews.setInt(R.id.ride_btn, "setColorFilter", white);
-                break;
-            case Constants.ALL_SPORTS:
-                //remoteViews.setInt(R.id.all_btn, "setBackgroundColor", darkOrange);
-                remoteViews.setInt(R.id.all_btn, "setColorFilter", white);
-                break;
-        }
-    }
-
-    private void setDistance(RemoteViews remoteViews, float distance){
-        //TODO update with a dot if in english
-        String distance_str = Float.toString(distance);
-        distance_str = distance_str.replace(".",",");
-        remoteViews.setTextViewText(R.id.x_km, distance_str);
     }
 }
