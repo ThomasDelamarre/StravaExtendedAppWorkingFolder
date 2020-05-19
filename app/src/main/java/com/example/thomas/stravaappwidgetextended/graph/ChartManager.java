@@ -1,23 +1,15 @@
-package com.example.thomas.stravaappwidgetextended.appWidget;
+package com.example.thomas.stravaappwidgetextended.graph;
 
-import android.Manifest;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
-import com.example.thomas.stravaappwidgetextended.Constants;
 import com.example.thomas.stravaappwidgetextended.R;
-import com.example.thomas.stravaappwidgetextended.appWidget.DataPreparator;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
@@ -29,18 +21,16 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Math.min;
 import static java.lang.Math.round;
 
-
 public class ChartManager {
 
     private Context context;
     private DataPreparator data_prep;
-    private float total_distance;
+    private float total;
 
     private final static float TEXT_SIZE = 12f;
     private final static int GRAPH_MAX_WIDTH = 800;
@@ -60,7 +50,7 @@ public class ChartManager {
         BarData data = r.getBarData();
         ArrayList<String> labels = r.getLabels();
         int today_index = r.getTodayIndex();
-        this.total_distance = r.getTotalDistance();
+        this.total = r.getTotal();
 
         //Configure then set BarData
         data.setValueFormatter(new MyValueFormatter()); //Remove label if data <0.4
@@ -98,7 +88,6 @@ public class ChartManager {
 
         //Required to convert in Bitmap
         //TODO understand ce que ca fait pour l'instant c'est des valeurs au pif
-
         barchart.measure(220, 60);
 
         //Set graph size
@@ -112,10 +101,10 @@ public class ChartManager {
         return bitmap;
     }
 
-    public float getTotalDistance(){
+    public float getTotal(){
         //TODO Fix CAREFUL : YOU MUST ONLY USE AFTER FETCHING NEW BARCHART ...
         //So far no issues
-        return this.total_distance;
+        return this.total;
     }
 
     private class MyValueFormatter implements IValueFormatter {

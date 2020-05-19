@@ -36,10 +36,16 @@ public class InitialStravaAuthActivity extends AppCompatActivity {
                 .appendQueryParameter("redirect_uri", Constants.REDIRECT_URI)
                 .appendQueryParameter("response_type", Constants.RESPONSE_TYPE_CODE)
                 .appendQueryParameter("approval_prompt", Constants.APPROVAL_PROMPT_AUTO)
-                .appendQueryParameter("scope", Constants.SCOPE_READ + "," + Constants.SCOPE_PROFILE_READ_ALL + "," + Constants.SCOPE_ACTIVITY_READ_ALL)
+                .appendQueryParameter("scope", Constants.SCOPE_READ + "," + Constants.SCOPE_PROFILE_READ_ALL + "," + Constants.SCOPE_ACTIVITY_READ_ALL + "," + Constants.SCOPE_WRITE)
                 .build();
 
         Intent intent = new Intent(Intent.ACTION_VIEW, intentUri);
         startActivity(intent);
         }
+
+    //Forbid going back to previous page
+    @Override
+    public void onBackPressed() {
+        return;
+    }
     }

@@ -25,7 +25,7 @@ public class StravaActivityDataSource {
             StravaActivitySQLiteHelper.COLUMN_DATE,
             StravaActivitySQLiteHelper.COLUMN_ACT_TYPE,
             StravaActivitySQLiteHelper.COLUMN_DISTANCE,
-            StravaActivitySQLiteHelper.COLUMN_MOVING_TIME };
+            StravaActivitySQLiteHelper.COLUMN_ELAPSED_TIME };
 
     public StravaActivityDataSource(Context context) {
         dbHelper = new StravaActivitySQLiteHelper(context);
@@ -39,6 +39,10 @@ public class StravaActivityDataSource {
         dbHelper.close();
     }
 
+    public void createNewDatabase(){
+        dbHelper.onUpgrade(database, 0, 1); //I believe number of version have no impact
+    }
+
     public void insertActiviy(Activity act) {
         ContentValues values = new ContentValues();
         values.put(StravaActivitySQLiteHelper.COLUMN_ID, act.getId());
@@ -46,13 +50,13 @@ public class StravaActivityDataSource {
         values.put(StravaActivitySQLiteHelper.COLUMN_DATE, act.getStartDate());
         values.put(StravaActivitySQLiteHelper.COLUMN_ACT_TYPE, act.getType());
         values.put(StravaActivitySQLiteHelper.COLUMN_DISTANCE, act.getDistance());
-        values.put(StravaActivitySQLiteHelper.COLUMN_MOVING_TIME, act.getMovingTime());
+        values.put(StravaActivitySQLiteHelper.COLUMN_ELAPSED_TIME, act.getElapsedTime());
         long insert = database.insert(StravaActivitySQLiteHelper.TABLE_ACTIVITIES, null, values);
         Log.e("Activity inserted", Long.toString(insert));
     }
 
     public void deleteActivity(Activity act) {
-        long id =act.getId();
+        long id = act.getId();
         String name = act.getName();
         System.out.println("Activity removed. Name: " + name + "Id: " + id);
         database.delete(StravaActivitySQLiteHelper.TABLE_ACTIVITIES, StravaActivitySQLiteHelper.COLUMN_ID
@@ -83,7 +87,7 @@ public class StravaActivityDataSource {
         act.setStartDate(cursor.getString(2));
         act.setType(cursor.getString(3));
         act.setDistance(cursor.getDouble(4));
-        act.setMovingTime(cursor.getLong(5));
+        act.setElapsedTime(cursor.getLong(5));
         return act;
     }
 

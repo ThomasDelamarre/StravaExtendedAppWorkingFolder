@@ -16,6 +16,13 @@ public class DatabaseManager {
         this.context = context;
     }
 
+    public void dumpCurrentDbAndCreateEmptyOne () {
+        StravaActivityDataSource data_source = new StravaActivityDataSource(this.context);
+        data_source.open();
+        data_source.createNewDatabase();
+        data_source.close();
+    }
+
     public void addActivitiesToDatabase(List<Activity> activities) {
         StravaActivityDataSource data_source = new StravaActivityDataSource(this.context);
         data_source.open();
@@ -47,5 +54,30 @@ public class DatabaseManager {
 
         data_source.close();
         return activities_to_return;
+    }
+
+    public void removeActivityFromDatabase(Activity act) {
+        StravaActivityDataSource data_source = new StravaActivityDataSource(this.context);
+        data_source.open();
+
+        data_source.deleteActivity(act);
+
+        data_source.close();
+    }
+
+    public Activity getActivityByName(String name) {
+        StravaActivityDataSource data_source = new StravaActivityDataSource(this.context);
+        data_source.open();
+
+        List<Activity> activities = data_source.getAllActivities();
+        data_source.close();
+
+        for (Activity act: activities) {
+            if (act.getName().equals(name)) {
+                return act;
+            }
+        }
+        Log.e("Unable to find the activity", "db manager");
+        return new Activity();
     }
 }

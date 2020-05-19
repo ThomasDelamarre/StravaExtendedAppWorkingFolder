@@ -19,6 +19,7 @@ public class Constants {
     public static final String SCOPE_READ = "read";
     public static final String SCOPE_ACTIVITY_READ_ALL = "activity:read_all";
     public static final String SCOPE_PROFILE_READ_ALL = "profile:read_all";
+    public static final String SCOPE_WRITE = "activity:write";
 
     public static final String ACCESS_TOKEN = "access token";
     public static final String REFRESH_TOKEN = "refresh token";
@@ -40,7 +41,7 @@ public class Constants {
 
     public static final String CURRENT_WEEK = "Current week";
     public static final String SINCE_DATE = "Since date";
-    public static final String CUSTOM = "Custom";
+    public static final String CUSTOM = "Last x days";
     public static final String CURRENT_MONTH = "Current month";
 
     public static final String DISPLAY_TYPE = "Display type";
@@ -48,4 +49,12 @@ public class Constants {
     public static final String START_DATE = "Start date";
 
     public static final String INITIAL_FETCH = "Initial fetch";
+
+    public static final String UNIT = "Unit";
+    public static final String DISTANCE = "Distance";
+    public static final String DURATION = "Duration";
+
+    public static final String LABELS = "Labels";
+    public static final String ENABLED = "Enabled";
+    public static final String DISABLED = "Disabled";
 }

@@ -64,4 +64,10 @@ public class AuthCodeExchangeActivity extends AppCompatActivity {
             }
         });
     }
+
+    //Forbid going back to previous page
+    @Override
+    public void onBackPressed() {
+        return;
+    }
 }

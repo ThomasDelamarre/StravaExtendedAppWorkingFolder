@@ -10,7 +10,7 @@
     <application
         android:allowBackup="true"
         tools:replace="android:allowBackup"
-        android:label="AAStravaAppWidgetExtended"
+        android:label="BBStravaAppWidgetExtended"
         android:launchMode="singleTask"
         android:theme="@style/AppTheme">
 
@@ -60,6 +60,14 @@
 
         <activity android:name=".ParametersActivity"
             android:label="Paramètres">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ManageDbActivity"
+            android:label="Manage Db">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>

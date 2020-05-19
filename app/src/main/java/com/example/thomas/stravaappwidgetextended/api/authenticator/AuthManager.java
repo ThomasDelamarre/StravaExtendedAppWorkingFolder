@@ -29,10 +29,6 @@ public class AuthManager {
             AuthTokens authTokens =  response.body();
             shared_pref_manager.saveAuthToken(authTokens);
         }
-
-        @Override
-        public void failed(String message) {
-        }
     };
 
     public AuthTokens getAuthTokens(){
@@ -63,15 +59,14 @@ public class AuthManager {
                              @Override
                              public void onResponse(Call call, Response response) {
                                  Log.i("Token refresh", "success");
-                                 AuthTokens authTokens = (AuthTokens) response.body();
-                                 shared_pref_manager.saveAuthToken(authTokens);
+                                 //AuthTokens authTokens = (AuthTokens) response.body();
+                                 //shared_pref_manager.saveAuthToken(authTokens);
                                  token_refresher.success(response);
                              }
 
                              @Override
                              public void onFailure(Call call, Throwable t) {
                                  Log.i("Token refresh", "fail");
-                                 token_refresher.failed("Failed");
                              }
                          });
         } else {
@@ -90,8 +85,7 @@ public class AuthManager {
         }
     }
 
-    public interface TokenRefresher{
+    private interface TokenRefresher{
         void success(Response<AuthTokens> response);
-        void failed(String message);
     }
 }

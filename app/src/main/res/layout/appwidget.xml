@@ -35,7 +35,7 @@
                 android:gravity="top|center_horizontal">
 
                 <TextView
-                    android:id="@+id/x_km"
+                    android:id="@+id/x_km_hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="0dp"
@@ -44,12 +44,21 @@
                     android:textColor="@android:color/black" />
 
                 <TextView
+                    android:id="@+id/x_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="0dp"
-                    android:text="km"
                     android:textColor="@android:color/black"
                     android:textSize="23dp" />
+
+                <TextView
+                    android:id="@+id/x_minutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:fontFamily="@android:roboto"
+                    android:textColor="@android:color/black"
+                    android:textSize="30dp" />
 
             </LinearLayout>
 
@@ -102,6 +111,7 @@
 
             <ImageButton
                 android:id="@+id/swim_btn"
+                android:tag="Swim"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/swim"
@@ -110,6 +120,7 @@
 
             <ImageButton
                 android:id="@+id/ride_btn"
+                android:tag="Ride"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/bike"
@@ -118,6 +129,7 @@
 
             <ImageButton
                 android:id="@+id/run_btn"
+                android:tag="Run"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/run"
@@ -126,6 +138,7 @@
 
             <ImageButton
                 android:id="@+id/all_btn"
+                android:tag="AllSports"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/triathlon"

@@ -59,9 +59,21 @@ public class SharedPrefManager {
         editor.commit();
     }
 
+    public void saveLabelsChoice(String choice){
+        SharedPreferences.Editor editor = this.shared_pref.edit();
+        editor.putString(Constants.LABELS, choice);
+        editor.commit();
+    }
+
     public void saveSportType(String sport_type){
         SharedPreferences.Editor editor = this.shared_pref.edit();
         editor.putString(Constants.SPORT_TYPE, sport_type);
+        editor.commit();
+    }
+
+    public void saveUnit(String unit){
+        SharedPreferences.Editor editor = this.shared_pref.edit();
+        editor.putString(Constants.UNIT, unit);
         editor.commit();
     }
 
@@ -110,6 +122,16 @@ public class SharedPrefManager {
     public String getAuthCode(){
         String auth_code = this.shared_pref.getString(Constants.AUTH_CODE, null);
         return auth_code;
+    }
+
+    public String getUnit(){
+        String unit = this.shared_pref.getString(Constants.UNIT, Constants.DISTANCE);
+        return unit;
+    }
+
+    public String getLabelsChoice(){
+        String label = this.shared_pref.getString(Constants.LABELS, Constants.ENABLED);
+        return label;
     }
 
     public String getAccessToken(){

@@ -2,12 +2,12 @@ package com.example.thomas.stravaappwidgetextended.api.requestor;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.thomas.stravaappwidgetextended.api.authenticator.AuthManager;
 import com.example.thomas.stravaappwidgetextended.api.pojo.Activity;
 import com.example.thomas.stravaappwidgetextended.api.pojo.AuthTokens;
+import com.example.thomas.stravaappwidgetextended.api.pojo.RenameAct;
+import com.example.thomas.stravaappwidgetextended.api.pojo.UpdateAct;
 import com.example.thomas.stravaappwidgetextended.database.DatabaseManager;
 
 import java.util.List;
@@ -33,7 +33,58 @@ public class RequestManager {
         this.database_manager = new DatabaseManager(this.context);
     }
 
+    public void convertActToHt(Activity act) {
+        AuthTokens auth_tokens = getAuthTokens();
+        final String bearer = "Bearer " + auth_tokens.getAccessToken();
+
+        Call call = stravaApi.setActivityToHomeTrainer(bearer, act.getId(), new UpdateAct());
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (response.body() != null) {
+                    Log.e("response", response.raw().toString());
+
+                    Log.e("succesfully updated", "success");
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.e("Impossible convertir to HT", t.getMessage());
+            }
+        });
+    }
+
+    public void renameActivity(Activity act, String name) {
+        AuthTokens auth_tokens = getAuthTokens();
+        final String bearer = "Bearer " + auth_tokens.getAccessToken();
+
+        Log.e("name", name);
+        Log.e("bearer", bearer);
+
+        Call call = this.stravaApi.renameActivity(bearer, act.getId(), new RenameAct(name));
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                Log.e("ici","oui");
+                Log.e("response", response.raw().toString());
+                if (response.body() != null) {
+                    Log.e("response", response.raw().toString());
+                    Log.e("succesfully rename", "success");
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.e("Impossible renommer", t.getMessage());
+            }
+        });
+    }
+
     //This method is used at first auth to populate the db and by the "Force full refresh" button
+    //We have an interface to be sure nothing is done before full fetch is finished
     public void fetchOneYearActivities(){
         AuthTokens auth_tokens = getAuthTokens();
         String bearer = "Bearer " + auth_tokens.getAccessToken();
@@ -49,8 +100,6 @@ public class RequestManager {
                     if (response.body() != null) {
                         List<Activity> activities = (List<Activity>) response.body();
                         database_manager.addActivitiesToDatabase(activities);
-                        Toast toast = Toast.makeText(context, "Data succesfully fetched!", Toast.LENGTH_SHORT);
-                        toast.show();
                     }
 
                 }
@@ -67,7 +116,6 @@ public class RequestManager {
     public void fetchLast30Activities() {
         AuthTokens auth_tokens = getAuthTokens();
         String bearer = "Bearer " + auth_tokens.getAccessToken();
-        Log.e("bearer", bearer);
 
         Call call = this.stravaApi.getLast30Activities(bearer);
 
@@ -77,14 +125,12 @@ public class RequestManager {
                 if (response.body() != null) {
                     List<Activity> activities = (List<Activity>) response.body();
                     database_manager.addActivitiesToDatabase(activities);
-                    Toast toast = Toast.makeText(context, "Data succesfully refreshed!", Toast.LENGTH_LONG);
-                    toast.show();
                 }
             }
 
             @Override
             public void onFailure(Call call, Throwable t) {
-                Log.e("erreur", t.getMessage());
+                Log.e("erreur dans request manager", t.getMessage());
             }
         });
     }
@@ -92,5 +138,6 @@ public class RequestManager {
     private AuthTokens getAuthTokens(){
         return auth_manager.getAuthTokens();
     }
+
 
 }

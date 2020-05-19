@@ -15,7 +15,7 @@ public class StravaActivitySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DATE = "date";
     public static final String COLUMN_ACT_TYPE = "activity_type";
     public static final String COLUMN_DISTANCE = "distance_meters";
-    public static final String COLUMN_MOVING_TIME = "moving_time_seconds";
+    public static final String COLUMN_ELAPSED_TIME = "elapsed_time_seconds";
 
 
     private static final String DATABASE_NAME = "activities.db";
@@ -29,7 +29,7 @@ public class StravaActivitySQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_DATE + " activity date, "
             + COLUMN_ACT_TYPE + " activity type, "
             + COLUMN_DISTANCE + " activity distance meters, "
-            + COLUMN_MOVING_TIME + " acitivty duration seconds);";
+            + COLUMN_ELAPSED_TIME + " acitivty duration seconds);";
 
     public StravaActivitySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

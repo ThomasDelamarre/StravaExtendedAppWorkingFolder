@@ -8,14 +8,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.example.thomas.stravaappwidgetextended.Constants;
+import com.example.thomas.stravaappwidgetextended.graph.ChartManager;
 import com.example.thomas.stravaappwidgetextended.ParametersActivity;
 import com.example.thomas.stravaappwidgetextended.R;
 import com.example.thomas.stravaappwidgetextended.api.requestor.RequestManager;
 import com.example.thomas.stravaappwidgetextended.sharedPreferences.SharedPrefManager;
+
+import java.time.LocalDate;
 
 public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
@@ -46,9 +49,6 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.i("OnUpdate", "True");
 
-        Toast toast = Toast.makeText(context,  "Appwidget updated", Toast.LENGTH_LONG);
-        toast.show();
-
         chart_manager = new ChartManager(context);
         sharedpref_manager = new SharedPrefManager(context);
         request_manager = new RequestManager(context);
@@ -62,10 +62,6 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        Toast toast = Toast.makeText(context,  "Intent received", Toast.LENGTH_SHORT);
-        toast.show();
-
         Log.i("OnReceive", intent.getAction());
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -84,7 +80,6 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
         if (intent_extract.equals(ACTION_WIDGET_REFRESH)) {
             request_manager.fetchLast30Activities();
-            //faire attendre que le request manager finissse TODO pas sur que besoin
         } else if (intent_extract.equals(ACTION_WIDGET_SWIM)) {
             sport_type = Constants.SWIM;
         } else if (intent_extract.equals(ACTION_WIDGET_RIDE)) {
@@ -114,9 +109,43 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
             setIntents(context, remoteViews, widgetId);
         }
         updateButtons(context, remoteViews);
+        setDisplayType(context, remoteViews);
         remoteViews.setImageViewBitmap(R.id.barchart, chart_manager.getBarChartInBitmap(sharedpref_manager.getSportType()));
-        remoteViews.setTextViewText(R.id.x_km, parseDistance(chart_manager.getTotalDistance())); //Must be done AFTER getChart
-        remoteViews.setTextViewText(R.id.display_type, sharedpref_manager.getDisplayType());
+        updateTotal(context, remoteViews); //Must be done AFTER getChart
+    }
+
+    private void updateTotal(Context context, RemoteViews remoteViews){
+
+        String unit = sharedpref_manager.getUnit();
+
+        switch (unit){
+            case Constants.DISTANCE:
+                remoteViews.setTextViewText(R.id.x_km_hour, parseDistance(chart_manager.getTotal()));
+                remoteViews.setTextViewText(R.id.x_unit, "km");
+                remoteViews.setViewVisibility(R.id.x_minutes, View.GONE);
+                break;
+            case Constants.DURATION:
+                int[] duration = parseDuration(chart_manager.getTotal());
+                remoteViews.setTextViewText(R.id.x_km_hour, Integer.toString(duration[0]));
+                remoteViews.setTextViewText(R.id.x_unit, "h");
+                remoteViews.setViewVisibility(R.id.x_minutes, View.VISIBLE);
+                if (duration[1] < 10){ remoteViews.setTextViewText(R.id.x_minutes, "0"+Integer.toString(duration[1]));}
+                else { remoteViews.setTextViewText(R.id.x_minutes, Integer.toString(duration[1]));}
+                break;
+        }
+    }
+
+    private void setDisplayType(Context context, RemoteViews remoteViews){
+        String display_type = sharedpref_manager.getDisplayType();
+        if (display_type.equals(Constants.CURRENT_MONTH) || display_type.equals(Constants.CURRENT_WEEK)){
+            remoteViews.setTextViewText(R.id.display_type, display_type);
+        } else if (display_type.equals(Constants.CUSTOM)){
+            String number_days = Integer.toString(sharedpref_manager.getNumberDays());
+            remoteViews.setTextViewText(R.id.display_type, "Last " + number_days + " days");
+        } else if (display_type.equals(Constants.SINCE_DATE)){
+            LocalDate date = sharedpref_manager.getStartDate();
+            remoteViews.setTextViewText(R.id.display_type, "Since " + date.getDayOfMonth() + " " + date.getMonth().toString());
+        }
     }
 
     private void setIntents(Context context, RemoteViews remoteViews, int widgetId){
@@ -134,7 +163,6 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
         remoteViews.setOnClickPendingIntent(R.id.run_btn, createBroadcastIntent(context, ACTION_WIDGET_RUN, widgetId));
         remoteViews.setOnClickPendingIntent(R.id.all_btn, createBroadcastIntent(context, ACTION_WIDGET_ALL, widgetId));
         remoteViews.setOnClickPendingIntent(R.id.strava, createBroadcastIntent(context, ACTION_WIDGET_OPEN_STRAVA, widgetId));
-
     }
 
     private PendingIntent createBroadcastIntent(Context context, String action, int id){
@@ -179,6 +207,14 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
         String distance_str = Float.toString(distance);
         distance_str = distance_str.replace(".",",");
         return distance_str;
+    }
+
+    private int[] parseDuration(float duration){
+        int[] return_data = new int[2];
+        Log.e("duration", Float.toString(duration));
+        return_data[0] = (int) duration;
+        return_data[1] = (int) ((duration-return_data[0])*100); //TODO FIX parfois +/- 1
+        return return_data;
     }
 
     private void openStravaApp(Context context){
