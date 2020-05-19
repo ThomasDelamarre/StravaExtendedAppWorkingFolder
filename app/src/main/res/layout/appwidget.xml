@@ -128,6 +128,15 @@
                 android:background="@color/stravaOrange"/>
 
             <ImageButton
+                android:id="@+id/ht_btn"
+                android:tag="HomeT"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/home_trainer2"
+                android:layout_weight="1"
+                android:background="@color/stravaOrange"/>
+
+            <ImageButton
                 android:id="@+id/run_btn"
                 android:tag="Run"
                 android:layout_width="35dp"

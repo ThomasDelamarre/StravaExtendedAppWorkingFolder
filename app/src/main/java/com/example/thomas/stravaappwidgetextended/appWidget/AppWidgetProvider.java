@@ -28,6 +28,7 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     private static String ACTION_WIDGET_REFRESH = "Rfs";
     private static String ACTION_WIDGET_RUN = "Run";
+    private static String ACTION_WIDGET_HT = "Htr";
     private static String ACTION_WIDGET_SWIM = "Swm";
     private static String ACTION_WIDGET_RIDE = "Rde";
     private static String ACTION_WIDGET_ALL = "All";
@@ -88,6 +89,8 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
             sport_type = Constants.RUN;
         } else if (intent_extract.equals(ACTION_WIDGET_ALL)) {
             sport_type = Constants.ALL_SPORTS;
+        } else if (intent_extract.equals(ACTION_WIDGET_HT)) {
+            sport_type = Constants.VIRTUAL_RIDE;
         } else if (intent_extract.equals(ACTION_WIDGET_OPEN_STRAVA)) {
             openStravaApp(context);
         } else {
@@ -161,6 +164,7 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
         remoteViews.setOnClickPendingIntent(R.id.swim_btn, createBroadcastIntent(context, ACTION_WIDGET_SWIM, widgetId));
         remoteViews.setOnClickPendingIntent(R.id.ride_btn, createBroadcastIntent(context, ACTION_WIDGET_RIDE, widgetId));
         remoteViews.setOnClickPendingIntent(R.id.run_btn, createBroadcastIntent(context, ACTION_WIDGET_RUN, widgetId));
+        remoteViews.setOnClickPendingIntent(R.id.ht_btn, createBroadcastIntent(context, ACTION_WIDGET_HT, widgetId));
         remoteViews.setOnClickPendingIntent(R.id.all_btn, createBroadcastIntent(context, ACTION_WIDGET_ALL, widgetId));
         remoteViews.setOnClickPendingIntent(R.id.strava, createBroadcastIntent(context, ACTION_WIDGET_OPEN_STRAVA, widgetId));
     }
@@ -184,6 +188,7 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
         remoteViews.setInt(R.id.swim_btn, "setColorFilter", black);
         remoteViews.setInt(R.id.run_btn, "setColorFilter", black);
         remoteViews.setInt(R.id.all_btn, "setColorFilter", black);
+        remoteViews.setInt(R.id.ht_btn, "setColorFilter", black);
 
 
         //Set the selected button to white tint
@@ -200,6 +205,9 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
             case Constants.ALL_SPORTS:
                 remoteViews.setInt(R.id.all_btn, "setColorFilter", white);
                 break;
+            case Constants.VIRTUAL_RIDE:
+                remoteViews.setInt(R.id.ht_btn, "setColorFilter", white);
+                break;
         }
     }
 
@@ -211,9 +219,8 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     private int[] parseDuration(float duration){
         int[] return_data = new int[2];
-        Log.e("duration", Float.toString(duration));
         return_data[0] = (int) duration;
-        return_data[1] = (int) ((duration-return_data[0])*100); //TODO FIX parfois +/- 1
+        return_data[1] = Math.round((duration-return_data[0])*100);
         return return_data;
     }
 

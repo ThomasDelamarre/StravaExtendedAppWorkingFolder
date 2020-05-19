@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.support.v4.content.ContextCompat;
 
+import com.example.thomas.stravaappwidgetextended.Constants;
 import com.example.thomas.stravaappwidgetextended.R;
+import com.example.thomas.stravaappwidgetextended.sharedPreferences.SharedPrefManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -30,6 +32,7 @@ public class ChartManager {
 
     private Context context;
     private DataPreparator data_prep;
+    private SharedPrefManager shared_pref_manager;
     private float total;
 
     private final static float TEXT_SIZE = 12f;
@@ -38,9 +41,12 @@ public class ChartManager {
     public ChartManager(Context context) {
         this.context = context;
         this.data_prep = new DataPreparator(this.context);
+        this.shared_pref_manager = new SharedPrefManager(this.context);
     }
 
     public Bitmap getBarChartInBitmap(String sport_type) {
+
+        String unit = this.shared_pref_manager.getUnit();
 
         Bitmap bitmap;
 
@@ -53,7 +59,7 @@ public class ChartManager {
         this.total = r.getTotal();
 
         //Configure then set BarData
-        data.setValueFormatter(new MyValueFormatter()); //Remove label if data <0.4
+        data.setValueFormatter(new MyValueFormatter(unit)); //Remove label if data <0.4 and add "h" if in hhmm
         data.setValueTextSize(TEXT_SIZE); //set text size on top of bars
         barchart.setData(data); // set the data
 
@@ -109,19 +115,27 @@ public class ChartManager {
 
     private class MyValueFormatter implements IValueFormatter {
 
-        private DecimalFormat mFormat;
+        private DecimalFormat kmFormat;
+        private DecimalFormat hhmmFormat;
+        private String unit;
 
-        public MyValueFormatter() {
-            mFormat = new DecimalFormat("###,###,##0.0"); // use one decimal
+        public MyValueFormatter(String unit) {
+            this.unit = unit;
+            kmFormat = new DecimalFormat("###,###,##0.0"); // use one decimal if in distance
+            hhmmFormat = new DecimalFormat("###,###,##0.00"); // use two decimal if in duration
         }
 
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-            if(value > 0.4f) {
-                return mFormat.format(value);
-            } else {
-                return "";
+            if (value > 0.4f) {
+                switch (this.unit) {
+                    case Constants.DISTANCE:
+                        return kmFormat.format(value);
+                    case Constants.DURATION:
+                        return hhmmFormat.format(value).replace(",", "h");
+                }
             }
+            return "";
         }
     }
 

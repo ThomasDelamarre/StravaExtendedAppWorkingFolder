@@ -62,7 +62,7 @@ public class DataPreparator {
                 break;
             case Constants.SINCE_DATE:
                 start_date = sharedpref_manager.getStartDate();
-                length = (int) ChronoUnit.DAYS.between(start_date, today);
+                length = (int) ChronoUnit.DAYS.between(start_date, today) +1;
                 break;
             case Constants.CUSTOM:
                 length = sharedpref_manager.getNumberDays();
@@ -124,8 +124,8 @@ public class DataPreparator {
 
         //Remove labels top of bars if decided
         if (sharedpref_manager.getLabelsChoice().equals(Constants.DISABLED)){
-            bar_dataset_after.setDrawValues(false);
             bar_dataset_before.setDrawValues(false);
+            bar_dataset_today.setDrawValues(false);
             bar_dataset_after.setDrawValues(false);
         }
 
@@ -137,7 +137,6 @@ public class DataPreparator {
         //Set bar width - If too big for display size the lib handles
         data.setBarWidth(0.2f);
 
-        //TODO si on est en heures on peut pas juste sommer au dela de 60 minutes
         return_data = new ConvenientReturnFormat(data, labels, today_index, (float) total);
         return return_data;
     }
@@ -153,21 +152,17 @@ public class DataPreparator {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         for (Activity act : activities) {
-            if (act.getType().equals(Constants.VIRTUAL_RIDE)){act.setType(Constants.RIDE);} //TODO Fix Current handling of Virtual rides
+            //if (act.getType().equals(Constants.VIRTUAL_RIDE)){act.setType(Constants.RIDE);} //TODO RESTORE IT AS AN OPTION ??
             if (act.getType().equals(sport_type) || sport_type.equals(Constants.ALL_SPORTS)){
                 String act_date_str = act.getStartDate();
-
                 double act_total = 0;
-                double new_total = 0;
 
                 switch (unit){
                     case Constants.DISTANCE:
                         act_total = act.getDistance();
-                        //act_total_formated = convertToKilometers(act_distance);
                         break;
                     case Constants.DURATION:
                         act_total = act.getElapsedTime();
-                        //act_total_formated = convertToHoursMinutes(act_duration);
                 }
 
                 LocalDate date = LocalDate.parse(act_date_str, formatter);
